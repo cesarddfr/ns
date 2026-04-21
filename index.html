@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Mensajes Encriptados</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #1e3c72, #2a5298);
+        color: white;
+        text-align: center;
+        padding: 20px;
+    }
+
+    h1 {
+        margin-bottom: 10px;
+    }
+
+    .container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+    }
+
+    .box {
+        background: rgba(255,255,255,0.1);
+        padding: 20px;
+        border-radius: 15px;
+        width: 300px;
+        backdrop-filter: blur(10px);
+    }
+
+    input, textarea {
+        width: 100%;
+        margin-top: 10px;
+        padding: 10px;
+        border-radius: 8px;
+        border: none;
+        outline: none;
+    }
+
+    button {
+        margin-top: 10px;
+        padding: 10px;
+        border: none;
+        border-radius: 8px;
+        background: #00c6ff;
+        color: white;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    button:hover {
+        background: #0072ff;
+    }
+
+    .resultado {
+        margin-top: 10px;
+        word-wrap: break-word;
+        background: rgba(0,0,0,0.3);
+        padding: 10px;
+        border-radius: 8px;
+    }
+</style>
+</head>
+<body>
+
+<h1>🔐 Mensajes Encriptados</h1>
+<p>Escribe una clave y un mensaje para encriptar o desencriptar</p>
+
+<div class="container">
+
+    <!-- ENCRIPTAR -->
+    <div class="box">
+        <h2>Encriptar</h2>
+        <input type="text" id="claveEnc" placeholder="Clave (ej: patata)">
+        <textarea id="mensajeEnc" placeholder="Mensaje"></textarea>
+        <button onclick="encriptar()">Encriptar</button>
+        <div class="resultado" id="resultadoEnc"></div>
+    </div>
+
+    <!-- DESENCRIPTAR -->
+    <div class="box">
+        <h2>Desencriptar</h2>
+        <input type="text" id="claveDec" placeholder="Clave">
+        <textarea id="mensajeDec" placeholder="Mensaje encriptado"></textarea>
+        <button onclick="desencriptar()">Desencriptar</button>
+        <div class="resultado" id="resultadoDec"></div>
+    </div>
+
+</div>
+
+<script>
+function xorEncrypt(text, key) {
+    let result = "";
+    for (let i = 0; i < text.length; i++) {
+        result += String.fromCharCode(
+            text.charCodeAt(i) ^ key.charCodeAt(i % key.length)
+        );
+    }
+    return result;
+}
+
+function encriptar() {
+    let clave = document.getElementById("claveEnc").value;
+    let mensaje = document.getElementById("mensajeEnc").value;
+
+    if (!clave || !mensaje) {
+        alert("Introduce clave y mensaje");
+        return;
+    }
+
+    let encriptado = btoa(xorEncrypt(mensaje, clave));
+    document.getElementById("resultadoEnc").innerText = encriptado;
+}
+
+function desencriptar() {
+    let clave = document.getElementById("claveDec").value;
+    let mensaje = document.getElementById("mensajeDec").value;
+
+    if (!clave || !mensaje) {
+        alert("Introduce clave y mensaje encriptado");
+        return;
+    }
+
+    try {
+        let desencriptado = xorEncrypt(atob(mensaje), clave);
+        document.getElementById("resultadoDec").innerText = desencriptado;
+    } catch (e) {
+        document.getElementById("resultadoDec").innerText = "Error: clave incorrecta o mensaje inválido";
+    }
+}
+</script>
+
+</body>
+</html>
+
